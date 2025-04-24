@@ -1,6 +1,7 @@
 package kiosk.challengelv2;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Menu {
     private String titleName;
@@ -9,16 +10,6 @@ public class Menu {
     Menu(String titleName, List<MenuItem> menuItemList){
         this.titleName = titleName;
         this.menuItemList = menuItemList;
-    }
-
-    public void printMenuItemList(){
-        System.out.printf("[ %s ]\n", titleName);
-        int menuNumber = 1;
-        for(MenuItem m : menuItemList){
-            System.out.printf("%d. %s | ￦ %.1f | %s \n", menuNumber, m.getName(), m.getPrice(), m.getDescription());
-            menuNumber++;
-        }
-        System.out.println("0. 뒤로가기");
     }
 
     public MenuItem selectMenu(int index){

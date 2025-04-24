@@ -40,17 +40,24 @@ public class Kiosk {
             selectMainMenu();
         } else  {
             orders.printOrderList();
-            int index = inputNumber(2, 1);
-            if(index == 0){
-                selectDisCountType();
-            } else {
-                selectMainMenu();
+            int index = inputNumber(3, 1);
+            switch (index){
+                case 0:
+                    selectDisCountType();
+                    break;
+                case 1:
+                    selectMainMenu();
+                    break;
+                case 2:
+                    inputRemoveOrderMenuItem();
+                    selectOrders(false);
+                    break;
             }
         }
     }
 
     private void selectItem(Menu menu){
-        menu.printMenuItemList();
+        printMenuItemList(menu);
 
         int index = inputNumber(menu.getMenuItemList().size(), 0);
         // 선택된 메뉴 출력
@@ -75,6 +82,12 @@ public class Kiosk {
         DisCountType disCountType = DisCountType.values()[index];
         float totalPrice = disCountType.calculate.apply(orders.getTotalPrice());
         System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", totalPrice);
+    }
+
+    private void inputRemoveOrderMenuItem(){
+        System.out.print("제거할 음식명을 입력해주세요(입력하는 단어와 겹치는 음식전부 제거) : ");
+        String inputText = sc.nextLine();
+        orders.removeOrderMenuItem(inputText);
     }
 
     private int inputNumber(int length, int startInt){
@@ -111,5 +124,15 @@ public class Kiosk {
         System.out.println("\n[ Order MENU ]");
         System.out.printf("%d. %s\n", menuNumber++, "Orders    | 장바구니를 확인 후 주문합니다.");
         System.out.printf("%d. %s\n", menuNumber, "Cancel    | 진행중인 주문을 취소합니다.");
+    }
+
+    public void printMenuItemList(Menu menu){
+        System.out.printf("[ %s ]\n", menu.getTitleName());
+        menu.getMenuItemList()
+                .stream()
+                .forEach((m)-> {
+                    System.out.printf("%d. %s | ￦ %.1f | %s \n", menu.getMenuItemList().indexOf(m) + 1, m.getName(), m.getPrice(), m.getDescription());
+                });
+        System.out.println("0. 뒤로가기");
     }
 }
