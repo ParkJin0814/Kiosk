@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 public class Orders {
     private List<MenuItem> ordersMenuList;
-    private float totalPrice;
 
     Orders(){
         ordersMenuList = new ArrayList<>();
@@ -23,12 +22,11 @@ public class Orders {
     public void printOrderList(){
         System.out.println("-----------------------------------------");
         System.out.println("[ ORDER MENU ]");
-        for(MenuItem m : ordersMenuList){
-            System.out.printf("%s | ￦ %.1f | %s \n",
-                    m.getName(),
-                    m.getPrice(),
-                    m.getDescription());
-        }
+        ordersMenuList.stream()
+                .forEach((m)->System.out.printf("%s | ￦ %.1f | %s \n",
+                        m.getName(),
+                        m.getPrice(),
+                        m.getDescription()));
         System.out.println("\n[ Total ]");
         System.out.printf("￦ %.1f \n", getTotalPrice());
         System.out.println("\n 1. 주문 2. 메뉴판  3. 메뉴취소 ");
@@ -41,7 +39,7 @@ public class Orders {
     }
 
     public float getTotalPrice(){
-        totalPrice = 0;
+        float totalPrice = 0;
         for(MenuItem m : ordersMenuList){
             totalPrice += m.getPrice();
         }

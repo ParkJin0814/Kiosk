@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Kiosk {
-    private List<Menu> menuList;
-    private Scanner sc = new Scanner(System.in);
-    private Orders orders;
+    private final List<Menu> menuList;
+    private final Scanner sc = new Scanner(System.in);
+    private final Orders orders;
 
     Kiosk(List<Menu> menuList, Orders orders){
         this.menuList = menuList;
@@ -75,11 +75,14 @@ public class Kiosk {
     private void selectDisCountType(){
         System.out.println("할인 정보를 입력해주세요.");
         int number = 1;
+
         for(DisCountType disCountType : DisCountType.values()){
             System.out.printf("%d. %s : %d%%\n", number++, disCountType.type, disCountType.disCountRate);
         }
         int index = inputNumber(DisCountType.values().length, 1);
+
         DisCountType disCountType = DisCountType.values()[index];
+
         float totalPrice = disCountType.calculate.apply(orders.getTotalPrice());
         System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", totalPrice);
     }
@@ -130,9 +133,7 @@ public class Kiosk {
         System.out.printf("[ %s ]\n", menu.getTitleName());
         menu.getMenuItemList()
                 .stream()
-                .forEach((m)-> {
-                    System.out.printf("%d. %s | ￦ %.1f | %s \n", menu.getMenuItemList().indexOf(m) + 1, m.getName(), m.getPrice(), m.getDescription());
-                });
+                .forEach((m)-> System.out.printf("%d. %s | ￦ %.1f | %s \n", menu.getMenuItemList().indexOf(m) + 1, m.getName(), m.getPrice(), m.getDescription()));
         System.out.println("0. 뒤로가기");
     }
 }

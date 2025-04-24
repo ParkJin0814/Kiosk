@@ -16,20 +16,6 @@ public enum DisCountType {
     final int disCountRate;
     final Calculate calculate;
 
-    public static DisCountType ofCustomerType(int index){
-        switch (index){
-            case 1:
-                return NationalMerit;
-            case 2:
-                return Soldier;
-            case 3:
-                return Student;
-            case 4:
-                return Normal;
-        }
-        return null;
-    }
-
     @FunctionalInterface
     interface Calculate{
         float apply(float totalPrice);
