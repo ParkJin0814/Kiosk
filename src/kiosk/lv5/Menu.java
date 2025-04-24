@@ -34,7 +34,15 @@ public class Menu {
         return titleName;
     }
 
+    public void setTitleName(String titleName){
+        this.titleName = titleName;
+    }
+
     public List<MenuItem> getMenuItemList(){
         return menuItemList;
+    }
+
+    public void setMenuItemList(List<MenuItem> menuItemList){
+        this.menuItemList = menuItemList;
     }
 }

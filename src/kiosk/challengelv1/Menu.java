@@ -1,4 +1,4 @@
-package kiosk.lv4;
+package kiosk.challengelv1;
 
 import java.util.List;
 
@@ -33,7 +33,6 @@ public class Menu {
     public String getTitleName(){
         return titleName;
     }
-
     public void setTitleName(String titleName){
         this.titleName = titleName;
     }
@@ -41,7 +40,6 @@ public class Menu {
     public List<MenuItem> getMenuItemList(){
         return menuItemList;
     }
-
     public void setMenuItemList(List<MenuItem> menuItemList){
         this.menuItemList = menuItemList;
     }
