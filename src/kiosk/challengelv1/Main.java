@@ -5,7 +5,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Kiosk kiosk = new Kiosk(createMainMenu());
+        Orders orders = new Orders();
+        Kiosk kiosk = new Kiosk(createMainMenu(), orders);
 
         kiosk.start();
         System.out.println("프로그램 종료");

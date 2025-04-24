@@ -21,13 +21,14 @@ public class Menu {
         System.out.println("0. 뒤로가기");
     }
 
-    public void printSelectMenu(int index){
+    public MenuItem selectMenu(int index){
         System.out.println("-----------------------------------------");
         System.out.printf("%s | ￦ %.1f | %s \n",
                 menuItemList.get(index).getName(),
                 menuItemList.get(index).getPrice(),
                 menuItemList.get(index).getDescription());
         System.out.println("-----------------------------------------");
+        return menuItemList.get(index);
     }
 
     public String getTitleName(){

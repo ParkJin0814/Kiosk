@@ -6,16 +6,66 @@ import java.util.Scanner;
 public class Kiosk {
     private List<Menu> menuList;
     private Scanner sc = new Scanner(System.in);
+    private Orders orders;
 
-    Kiosk(List<Menu> menuList){
+    Kiosk(List<Menu> menuList, Orders orders){
         this.menuList = menuList;
+        this.orders = orders;
     }
 
     public void start(){
         selectMainMenu();
     }
 
-    private int inputNumber(int length){
+    private void selectMainMenu(){
+        printMainMenuList();
+
+        boolean ordersIsEmpty = orders.getOrdersMenuList().isEmpty();
+        int menuListLength = menuList.size();
+        int inputLength = ordersIsEmpty? menuListLength : menuListLength+2;
+        int index = inputNumber(inputLength, 0);
+        if(index != -1) {
+            if(index < menuListLength) {
+                selectItem(menuList.get(index));
+            } else {
+                boolean cancel = inputLength -1 == index;
+                selectOrders(cancel);
+            }
+        }
+    }
+
+    private void selectOrders(boolean cancel){
+        if(cancel){
+            orders.removeOrders();
+            selectMainMenu();
+        } else  {
+            orders.printOrderList();
+            int index = inputNumber(2, 1);
+            if(index == 0){
+                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", orders.getTotalPrice());
+            } else {
+                selectMainMenu();
+            }
+        }
+    }
+
+    private void selectItem(Menu menu){
+        menu.printMenuItemList();
+
+        int index = inputNumber(menu.getMenuItemList().size(), 0);
+        // 선택된 메뉴 출력
+        if(index != -1) {
+            MenuItem selected = menu.selectMenu(index);
+            System.out.println("위 메뉴를 장바구니에 추가하시겠습니까? \n 1. 확인 \n 2. 취소");
+            index = inputNumber(2, 1);
+            if(index == 0) {
+                orders.addOrder(selected);
+            }
+        }
+        selectMainMenu();
+    }
+
+    private int inputNumber(int length, int startInt){
         while (true){
             try {
                 System.out.println("-----------------------------------------");
@@ -23,7 +73,7 @@ public class Kiosk {
                 String inputText = sc.nextLine();
                 int index = Integer.parseInt(inputText) -1;
                 // 메뉴아이템으로 넘어가기
-                if(index < -1 || index > length - 1){
+                if(index < startInt - 1 || index > length - 1){
                     throw new Exception();
                 }
                 System.out.println("-----------------------------------------");
@@ -38,29 +88,16 @@ public class Kiosk {
         System.out.println("[ Main MENU ]");
         int menuNumber = 1;
         for(Menu m : menuList){
-            System.out.printf("%d. %s\n", menuNumber, m.getTitleName());
-            menuNumber++;
+            System.out.printf("%d. %s\n", menuNumber++, m.getTitleName());
         }
         System.out.println("0. 종료      | 종료");
-    }
 
-    private void selectMainMenu(){
-        printMainMenuList();
-
-        int index = inputNumber(menuList.size());
-        if(index != -1) {
-            selectItem(menuList.get(index));
+        if(orders.getOrdersMenuList().isEmpty()){
+            return;
         }
-    }
 
-    private void selectItem(Menu menu){
-        menu.printMenuItemList();
-
-        int index = inputNumber(menu.getMenuItemList().size());
-        // 선택된 메뉴 출력
-        if(index != -1) {
-            menu.printSelectMenu(index);
-        }
-        selectMainMenu();
+        System.out.println("\n[ Order MENU ]");
+        System.out.printf("%d. %s\n", menuNumber++, "Orders    | 장바구니를 확인 후 주문합니다.");
+        System.out.printf("%d. %s\n", menuNumber, "Cancel    | 진행중인 주문을 취소합니다.");
     }
 }
