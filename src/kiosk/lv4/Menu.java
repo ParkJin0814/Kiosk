@@ -3,7 +3,7 @@ package kiosk.lv4;
 import java.util.List;
 
 public class Menu {
-    private String titleName;
+    private final String titleName;
     private List<MenuItem> menuItemList;
 
     Menu(String titleName, List<MenuItem> menuItemList){
@@ -32,10 +32,6 @@ public class Menu {
 
     public String getTitleName(){
         return titleName;
-    }
-
-    public void setTitleName(String titleName){
-        this.titleName = titleName;
     }
 
     public List<MenuItem> getMenuItemList(){
