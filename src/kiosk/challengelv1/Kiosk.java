@@ -1,12 +1,10 @@
 package kiosk.challengelv1;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Kiosk {
-    private List<Menu> menuList;
-    private Scanner sc = new Scanner(System.in);
-    private Orders orders;
+    private final List<Menu> menuList;
+    private final Orders orders;
 
     Kiosk(List<Menu> menuList, Orders orders){
         this.menuList = menuList;
@@ -23,7 +21,7 @@ public class Kiosk {
         boolean ordersIsEmpty = orders.getOrdersMenuList().isEmpty();
         int menuListLength = menuList.size();
         int inputLength = ordersIsEmpty? menuListLength : menuListLength+2;
-        int index = inputNumber(inputLength, 0);
+        int index = InputHandler.inputNumber(inputLength, 0);
         if(index != -1) {
             if(index < menuListLength) {
                 selectItem(menuList.get(index));
@@ -40,7 +38,7 @@ public class Kiosk {
             selectMainMenu();
         } else  {
             orders.printOrderList();
-            int index = inputNumber(2, 1);
+            int index = InputHandler.inputNumber(2, 1);
             if(index == 0){
                 System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", orders.getTotalPrice());
             } else {
@@ -52,36 +50,17 @@ public class Kiosk {
     private void selectItem(Menu menu){
         menu.printMenuItemList();
 
-        int index = inputNumber(menu.getMenuItemList().size(), 0);
+        int index = InputHandler.inputNumber(menu.getMenuItemList().size(), 0);
         // 선택된 메뉴 출력
         if(index != -1) {
             MenuItem selected = menu.selectMenu(index);
             System.out.println("위 메뉴를 장바구니에 추가하시겠습니까? \n 1. 확인 \n 2. 취소");
-            index = inputNumber(2, 1);
+            index = InputHandler.inputNumber(2, 1);
             if(index == 0) {
                 orders.addOrder(selected);
             }
         }
         selectMainMenu();
-    }
-
-    private int inputNumber(int length, int startInt){
-        while (true){
-            try {
-                System.out.println("-----------------------------------------");
-                System.out.print("번호를 입력해주세요 : ");
-                String inputText = sc.nextLine();
-                int index = Integer.parseInt(inputText) -1;
-                // 메뉴아이템으로 넘어가기
-                if(index < startInt - 1 || index > length - 1){
-                    throw new Exception();
-                }
-                System.out.println("-----------------------------------------");
-                return index;
-            } catch (Exception e){
-                System.out.println("제시된 숫자중에서 입력해주세요");
-            }
-        }
     }
 
     private void printMainMenuList(){
