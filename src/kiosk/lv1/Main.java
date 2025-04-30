@@ -21,6 +21,8 @@ public class Main {
             System.out.println("0. 종료      | 종료");
 
             inputText = sc.nextLine();
+
+            System.out.println(menus[Integer.parseInt(inputText) - 1]);
         }
     }
 }

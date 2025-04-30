@@ -5,13 +5,17 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        // 장바구니 인스턴스화
         Orders orders = new Orders();
+        // 키오스크 인스턴스화
         Kiosk kiosk = new Kiosk(createMainMenu(), orders);
 
+        // 키오스크 시작메서드
         kiosk.start();
         System.out.println("프로그램 종료");
     }
 
+    // 카테고리 메뉴 리스트 추가
     public static List<Menu> createMainMenu(){
         List<Menu> menuList = new ArrayList<>();
         menuList.add(new Menu("Burgers", createBurgerList()));
@@ -20,6 +24,7 @@ public class Main {
         return menuList;
     }
 
+    // 버거메뉴추가
     public static List<MenuItem> createBurgerList(){
         List<MenuItem> menuItemList = new ArrayList<>();
         menuItemList.add(new MenuItem("ShackBurger", 6.9f, "토마토, 양상추, 쉑소스가 토핑된 치즈버거"));
@@ -29,6 +34,7 @@ public class Main {
         return menuItemList;
     }
 
+    // 드링크 메뉴추가
     public static List<MenuItem> createDrinkList(){
         List<MenuItem> menuItemList = new ArrayList<>();
         menuItemList.add(new MenuItem("콜라", 2.5f, "시원하고 탄산 가득한 음료"));
@@ -38,6 +44,7 @@ public class Main {
         return menuItemList;
     }
 
+    // 디저트메뉴추가
     public static List<MenuItem> createDessertsList(){
         List<MenuItem> menuItemList = new ArrayList<>();
         menuItemList.add(new MenuItem("초콜릿 케이크", 4.5f, "달콤한 초콜릿으로 만든 케이크"));

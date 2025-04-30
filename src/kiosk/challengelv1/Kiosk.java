@@ -12,71 +12,91 @@ public class Kiosk {
     }
 
     public void start(){
-        selectMainMenu();
+        handleMainMenuSelection();
     }
 
-    private void selectMainMenu(){
-        printMainMenuList();
+    // 메인메뉴 선택메서드
+    private void handleMainMenuSelection(){
+        printList("Main MENU", menuList);
+        System.out.println("0. 종료");
 
-        boolean ordersIsEmpty = orders.getOrdersMenuList().isEmpty();
-        int menuListLength = menuList.size();
-        int inputLength = ordersIsEmpty? menuListLength : menuListLength+2;
-        int index = InputHandler.inputNumber(inputLength, 0);
-        if(index != -1) {
-            if(index < menuListLength) {
-                selectItem(menuList.get(index));
-            } else {
-                boolean cancel = inputLength -1 == index;
-                selectOrders(cancel);
-            }
+        // 장바구니 목록이 비어있는지 확인
+        boolean isOrderEmpty = orders.getOrdersMenuList().isEmpty();
+
+        // 장비구니 목록이 있으면
+        if(!isOrderEmpty){
+            System.out.println("\n[ Order MENU ]");
+            System.out.printf("%d. %s\n", menuList.size() + 1, "Orders    | 장바구니를 확인 후 주문합니다.");
+            System.out.printf("%d. %s\n", menuList.size() + 2, "Cancel    | 진행중인 주문을 취소합니다.");
         }
-    }
 
-    private void selectOrders(boolean cancel){
-        if(cancel){
-            orders.removeOrders();
-            selectMainMenu();
-        } else  {
-            orders.printOrderList();
-            int index = InputHandler.inputNumber(2, 1);
-            if(index == 0){
-                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", orders.getTotalPrice());
-            } else {
-                selectMainMenu();
-            }
-        }
-    }
+        // 장바구니 목록이 없으면 장바구니 선택지는 주면 안된다
+        int menuLength = isOrderEmpty ? menuList.size() : menuList.size() + 2;
 
-    private void selectItem(Menu menu){
-        menu.printMenuItemList();
+        int selectedIndex = InputHandler.inputNumber(menuLength, 0);
 
-        int index = InputHandler.inputNumber(menu.getMenuItemList().size(), 0);
-        // 선택된 메뉴 출력
-        if(index != -1) {
-            MenuItem selected = menu.selectMenu(index);
-            System.out.println("위 메뉴를 장바구니에 추가하시겠습니까? \n 1. 확인 \n 2. 취소");
-            index = InputHandler.inputNumber(2, 1);
-            if(index == 0) {
-                orders.addOrder(selected);
-            }
-        }
-        selectMainMenu();
-    }
-
-    private void printMainMenuList(){
-        System.out.println("[ Main MENU ]");
-        int menuNumber = 1;
-        for(Menu m : menuList){
-            System.out.printf("%d. %s\n", menuNumber++, m.getTitleName());
-        }
-        System.out.println("0. 종료      | 종료");
-
-        if(orders.getOrdersMenuList().isEmpty()){
+        if (selectedIndex <= 0) {
+            // 키오스크 종료
             return;
         }
 
-        System.out.println("\n[ Order MENU ]");
-        System.out.printf("%d. %s\n", menuNumber++, "Orders    | 장바구니를 확인 후 주문합니다.");
-        System.out.printf("%d. %s\n", menuNumber, "Cancel    | 진행중인 주문을 취소합니다.");
+        if (selectedIndex < menuList.size()) {
+            // 입력된 값이 메뉴리스트 범위내라면
+            handleMenuSelection(menuList.get(selectedIndex-1));
+        } else {
+            // 그외에는 장바구니 관련 메서드 실행
+            handleOrderSelection(selectedIndex == menuLength);
+        }
+    }
+
+    // 주문
+    private void handleOrderSelection(boolean cancel){
+        if(cancel){
+            orders.removeOrders();
+            handleMainMenuSelection();
+        } else  {
+            printList("ORDER MENU", orders.getOrdersMenuList());
+            System.out.println("[ Total ]");
+            System.out.printf("￦ %.1f \n", orders.getTotalPrice());
+            System.out.println("1. 주문  2. 메뉴판");
+            // 1. 주문 2. 메뉴판
+            int selection = InputHandler.inputNumber(2, 1);
+            if(selection == 1){
+                // 주문 완료시 프로그램 종료
+                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", orders.getTotalPrice());
+            } else {
+                // 주문취소시 메인메뉴
+                handleMainMenuSelection();
+            }
+        }
+    }
+
+    // 선택된 메뉴 처리
+    private void handleMenuSelection(Menu menu){
+        printList(menu.toString(), menu.getMenuItemList());
+        System.out.println("0. 뒤로가기");
+
+        int selectedIndex = InputHandler.inputNumber(menu.getMenuItemList().size(), 0);
+        // 선택된 메뉴 출력
+        if(selectedIndex != 0) {
+            MenuItem selected = menu.selectedMenuItem(selectedIndex - 1);
+            System.out.println("위 메뉴를 장바구니에 추가하시겠습니까? \n 1. 확인 \n 2. 취소");
+            selectedIndex = InputHandler.inputNumber(2, 1);
+            if(selectedIndex == 1) {
+                orders.addOrder(selected);
+            }
+        }
+        // 메뉴처리후 다시 메인메뉴
+        handleMainMenuSelection();
+    }
+
+
+    // 리스트 출력
+    private <T> void printList(String printTitle, List<T> list){
+        System.out.printf("[ %s ]\n", printTitle);
+        int menuNumber = 1;
+        for(T m : list){
+            System.out.printf("%d. %s \n", menuNumber++, m);
+        }
     }
 }

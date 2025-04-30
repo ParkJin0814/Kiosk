@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 public class InputHandler {
     private static final Scanner sc = new Scanner(System.in);
-    public static int inputNumber(int maxInt, int startInt){
+
+    // 숫자입력받기 최대값 최소값 받아 범위내의 값만 출력
+    public static int inputNumber(int maxIndex, int startIndex){
         while (true){
             try {
                 System.out.println("-----------------------------------------");
@@ -12,7 +14,7 @@ public class InputHandler {
                 String inputText = sc.nextLine();
                 int index = Integer.parseInt(inputText) -1;
                 // 메뉴아이템으로 넘어가기
-                if(index < startInt - 1 || index > maxInt - 1){
+                if(index < startIndex - 1 || index > maxIndex - 1){
                     throw new Exception();
                 }
                 System.out.println("-----------------------------------------");
