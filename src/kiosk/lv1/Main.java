@@ -19,10 +19,16 @@ public class Main {
             }
 
             System.out.println("0. 종료      | 종료");
-
-            inputText = sc.nextLine();
-
-            System.out.println(menus[Integer.parseInt(inputText) - 1]);
+            
+            try {
+                inputText = sc.nextLine();
+                if(!inputText.equals("0")) {
+                    System.out.println(menus[Integer.parseInt(inputText) - 1]);
+                }
+            } catch (Exception e) {
+                System.out.println("제시된 숫자중에 입력해주세요");
+            }
+            
         }
     }
 }

@@ -18,6 +18,11 @@ public enum DisCountType {
     final int disCountRate;
     final Calculate calculate;
 
+    @Override
+    public String toString() {
+        return type + " : " + disCountRate + "%";
+    }
+
     @FunctionalInterface
     interface Calculate{
         float apply(float totalPrice);

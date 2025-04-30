@@ -22,4 +22,9 @@ public class MenuItem {
     public String getDescription(){
         return description;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%-15s | ￦ %-5.1f | %s", name, price, description);
+    }
 }

@@ -22,12 +22,12 @@ public class Menu {
         return menuItemList.get(index);
     }
 
-
-    public String getTitleName(){
-        return titleName;
-    }
-
     public List<MenuItem> getMenuItemList(){
         return menuItemList;
+    }
+
+    @Override
+    public String toString() {
+        return titleName;
     }
 }

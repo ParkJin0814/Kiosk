@@ -1,6 +1,7 @@
 package kiosk.challengelv2;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Kiosk {
@@ -13,71 +14,92 @@ public class Kiosk {
     }
 
     public void start(){
-        selectMainMenu();
+        handleMainMenuSelection();
     }
 
-    private void selectMainMenu(){
-        printMainMenuList();
+    private void handleMainMenuSelection(){
+        printList("Main MENU", menuList);
+        System.out.println("0. 종료");
 
-        boolean ordersIsEmpty = orders.getOrdersMenuList().isEmpty();
-        int menuListLength = menuList.size();
-        int inputLength = ordersIsEmpty? menuListLength : menuListLength+2;
-        int index = InputHandler.inputNumber(inputLength, 0);
-        if(index != -1) {
-            if(index < menuListLength) {
-                selectItem(menuList.get(index));
-            } else {
-                boolean cancel = inputLength -1 == index;
-                selectOrders(cancel);
-            }
+        // 장바구니 목록이 비어있는지 확인
+        boolean isOrderEmpty = orders.getOrdersMenuList().isEmpty();
+
+        // 장비구니 목록이 있으면
+        if(!isOrderEmpty){
+            System.out.println("\n[ Order MENU ]");
+            System.out.printf("%d. %s\n", menuList.size() + 1, "Orders    | 장바구니를 확인 후 주문합니다.");
+            System.out.printf("%d. %s\n", menuList.size() + 2, "Cancel    | 진행중인 주문을 취소합니다.");
+        }
+
+        // 장바구니 목록이 없으면 장바구니 선택지는 주면 안된다
+        int menuLength = isOrderEmpty ? menuList.size() : menuList.size() + 2;
+
+        int selectedIndex = kiosk.challengelv1.InputHandler.inputNumber(menuLength, 0);
+
+        if (selectedIndex <= 0) {
+            // 키오스크 종료
+            return;
+        }
+
+        if (selectedIndex < menuList.size()) {
+            // 입력된 값이 메뉴리스트 범위내라면
+            handleMenuSelection(menuList.get(selectedIndex-1));
+        } else {
+            // 그외에는 장바구니 관련 메서드 실행
+            handleOrderSelection(selectedIndex == menuLength);
         }
     }
 
-    private void selectOrders(boolean cancel){
+    private void handleOrderSelection(boolean cancel){
         if(cancel){
             orders.removeOrders();
-            selectMainMenu();
+            handleMainMenuSelection();
         } else  {
-            orders.printOrderList();
-            int index = InputHandler.inputNumber(3, 1);
-            switch (index){
-                case 0:
-                    selectDisCountType();
-                    break;
+            printList("ORDER MENU", orders.getOrdersMenuList());
+            System.out.println("[ Total ]");
+            System.out.printf("￦ %.1f \n", orders.getTotalPrice());
+            System.out.println("1. 주문  2. 메뉴판");
+            // 1. 주문 2. 메뉴판
+            int selection = InputHandler.inputNumber(3, 1);
+            switch (selection){
                 case 1:
-                    selectMainMenu();
+                    handleDisCountTypeSelection();
                     break;
                 case 2:
+                    handleMainMenuSelection();
+                    break;
+                case 3:
                     inputRemoveOrderMenuItem();
-                    selectOrders(false);
+                    handleOrderSelection(false);
                     break;
             }
         }
     }
 
-    private void selectItem(Menu menu){
-        printMenuItemList(menu);
+    private void handleMenuSelection(Menu menu){
+        printList(menu.toString(), menu.getMenuItemList());
+        System.out.println("0. 뒤로가기");
 
-        int index = InputHandler.inputNumber(menu.getMenuItemList().size(), 0);
+        int selectedIndex = InputHandler.inputNumber(menu.getMenuItemList().size(), 0);
         // 선택된 메뉴 출력
-        if(index != -1) {
-            MenuItem selected = menu.selectMenu(index);
+        if(selectedIndex != 0) {
+            MenuItem selected = menu.selectMenu(selectedIndex - 1);
             System.out.println("위 메뉴를 장바구니에 추가하시겠습니까? \n 1. 확인 \n 2. 취소");
-            index = InputHandler.inputNumber(2, 1);
-            if(index == 0) {
+            selectedIndex = InputHandler.inputNumber(2, 1);
+            if(selectedIndex == 1) {
                 orders.addOrder(selected);
             }
         }
-        selectMainMenu();
+        // 메뉴처리후 다시 메인메뉴
+        handleMainMenuSelection();
     }
 
-    private void selectDisCountType(){
+    // 할인 정보입력
+    private void handleDisCountTypeSelection(){
         System.out.println("할인 정보를 입력해주세요.");
-        int number = 1;
 
-        for(DisCountType disCountType : DisCountType.values()){
-            System.out.printf("%d. %s : %d%%\n", number++, disCountType.type, disCountType.disCountRate);
-        }
+        printList("할인 정보를 입력해주세요", Arrays.stream(DisCountType.values()).toList());
+
         int index = InputHandler.inputNumber(DisCountType.values().length, 1);
 
         DisCountType disCountType = DisCountType.values()[index];
@@ -92,28 +114,12 @@ public class Kiosk {
         orders.removeOrderMenuItem(inputText);
     }
 
-    private void printMainMenuList(){
-        System.out.println("[ Main MENU ]");
+    // 리스트 출력
+    private <T> void printList(String printTitle, List<T> list){
+        System.out.printf("[ %s ]\n", printTitle);
         int menuNumber = 1;
-        for(Menu m : menuList){
-            System.out.printf("%d. %s\n", menuNumber++, m.getTitleName());
+        for(T m : list){
+            System.out.printf("%d. %s \n", menuNumber++, m);
         }
-        System.out.println("0. 종료      | 종료");
-
-        if(orders.getOrdersMenuList().isEmpty()){
-            return;
-        }
-
-        System.out.println("\n[ Order MENU ]");
-        System.out.printf("%d. %s\n", menuNumber++, "Orders    | 장바구니를 확인 후 주문합니다.");
-        System.out.printf("%d. %s\n", menuNumber, "Cancel    | 진행중인 주문을 취소합니다.");
-    }
-
-    public void printMenuItemList(Menu menu){
-        System.out.printf("[ %s ]\n", menu.getTitleName());
-        menu.getMenuItemList()
-                .stream()
-                .forEach((m)-> System.out.printf("%d. %s | ￦ %.1f | %s \n", menu.getMenuItemList().indexOf(m) + 1, m.getName(), m.getPrice(), m.getDescription()));
-        System.out.println("0. 뒤로가기");
     }
 }
