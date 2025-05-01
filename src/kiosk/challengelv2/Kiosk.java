@@ -58,7 +58,7 @@ public class Kiosk {
             printList("ORDER MENU", orders.getOrdersMenuList());
             System.out.println("[ Total ]");
             System.out.printf("￦ %.1f \n", orders.getTotalPrice());
-            System.out.println("1. 주문  2. 메뉴판");
+            System.out.println("1. 주문  2. 메뉴판 3. 메뉴취소");
             // 1. 주문 2. 메뉴판
             int selection = InputHandler.inputNumber(3, 1);
             switch (selection){
@@ -102,7 +102,7 @@ public class Kiosk {
 
         int index = InputHandler.inputNumber(DisCountType.values().length, 1);
 
-        DisCountType disCountType = DisCountType.values()[index];
+        DisCountType disCountType = DisCountType.values()[index - 1];
 
         float totalPrice = disCountType.calculate.apply(orders.getTotalPrice());
         System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다 \n", totalPrice);
