@@ -1,5 +1,8 @@
 # 키오스크 프로그램 
 
+![image](https://github.com/user-attachments/assets/f475c287-571a-46eb-831c-eeede2d1e4b2)
+
+
 ## 개발 환경
 
 - IDE : Intellij
